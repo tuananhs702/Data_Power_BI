@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install jupyter nbconvert pandas numpy re ast
+          pip install jupyter nbconvert pandas numpy
 
       - name: Run Jupyter Notebook
         run: |
