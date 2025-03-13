@@ -1,0 +1,39 @@
+name: Run Jupyter Notebook
+
+on:
+  push:
+    branches:
+      - main  # Chạy khi có cập nhật trên nhánh main
+  schedule:
+    - cron: "0 12 * * *"  # Chạy tự động mỗi ngày vào 12:00 UTC
+  workflow_dispatch:  # Cho phép chạy thủ công từ GitHub UI
+
+jobs:
+  run-notebook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install jupyter nbconvert pandas numpy re ast
+
+      - name: Run Jupyter Notebook
+        run: |
+          jupyter nbconvert --to notebook --execute Lemo_Clean_002_Comment.ipynb --output Lemo_Clean_002_Comment_Output.ipynb
+
+      - name: Commit and push results
+        run: |
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "github-actions[bot]"
+          git add Lemo_Clean_002_Comment_Output.ipynb
+          git commit -m "Auto-run notebook on $(date)" || echo "No changes to commit"
+          git push
